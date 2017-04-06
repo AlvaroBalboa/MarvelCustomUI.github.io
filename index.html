@@ -1,0 +1,170 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+
+
+
+        <header>
+            <nav>
+
+            </nav>
+        </header>
+        <br/>
+        <div ng-app="myMarvel">
+            <div ng-controller="findTheHero">
+                <input type="text" ng-model="searchName" ng-model-options="{ debounce: 800 }"
+                       placeholder="type in the character name" size="70">
+                <br/>
+                <br/>
+                <div ng-if="!details">
+                    Loading results...
+                </div>
+
+                <div id="main-info" class="col-md-8">
+                    <div ng-if="!details">
+                        Loading results...
+                    </div>
+
+                    <div ng-if="details.Response==='True'">
+                        <img ng-src="{{ details.Poster=='N/A' ? 'http://placehold.it/150x220&text=N/A' : details.Poster }}" class="thumbnail animated flip movie-poster">
+
+                        <span class="span-outer">
+                            <a href="http://imdb.com/title/{{ details.imdbID }}" target="_blank">{{ details.Title }}</a>
+                            </span>, {{ details.Year }}
+
+                        <p><strong>Released on:</strong> {{ details.Released }} ({{ details.Runtime }})</p>
+
+                        <p>{{ details.Plot }}</p>
+
+                        <p class="outer-p">
+                        <div class="inner-p">
+                            <span class="label label-primary">Directors :</span> {{ details.Director }}
+                        </div>
+                        <div class="inner-p">
+                            <span class="label label-primary">Actors :</span> {{ details.Actors }}
+                        </div>
+                        <div class="inner-p">
+                            <span class="label label-primary">Genre :</span> {{ details.Genre }}
+                        </div>
+                        </p>
+
+                        <p class="outer-p-2">Ratings:
+                            <br>
+                            <strong>IMDb Rating</strong>: <span class="label label-success">{{ details.imdbRating }}</span>
+                            <br>
+                            <strong>Rotten Tomatoes</strong>: <span class="label label-success">{{ details.tomatoRating }}</span>
+                        </p>
+
+                    </div>
+
+                    <div ng-if="details.Response==='False'">
+                        No results found.
+                    </div>
+                </div>
+
+
+
+
+                <div ng-if="video == video.large">
+                    <table>
+                        <tr>
+                            <td>characters</td>
+                        </tr>
+                        <tr ng-repeat="fullList in heroes">
+                            <td>{{fullList}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div ng-if="video != video.large">
+                    <table>
+                        <tr>
+                            <td>characters</td>
+                        </tr>
+                        <tr ng-repeat="fullList in heroes">
+                            <td>{{fullList}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+        <script type="text/javascript">
+
+            //fire up the angular app
+            var app = angular.module('myMarvel', []);
+
+            //add a controller to the app
+            app.controller("findTheHero",["$scope", "$http", function($scope,$http) {
+
+                //the is no specific if statement available in angular using ng-if
+                //add game into scope
+//                $scope.heroName = "";
+//                if ($scope.heroName==null) {
+//                    //add users into scope
+//                    $scope.heroes = ["eric", "bob", "bill", "jim", "santa clause"]
+//                }
+//                $scope.heroes = [];
+
+                $scope.$watch('searchName', function() {
+                    getFromApi();
+                });
+
+                $scope.searchName = "";
+                //https://gateway.marvel.com:443/v1/public/characters?apikey=e3499469c9a457a91a2c166db22ea059
+
+                function getFromApi() {
+
+                    $http({method: "get", url:"https://gateway.marvel.com:443/v1/public/characters?apikey=e3499469c9a457a91a2c166db22ea059",})
+                        .then(function(response){ $scope.details = response.data; });
+                    $http.get({ url:"https://gateway.marvel.com:443/v1/public/characters?nameStartsWith= "+ $scope.searchName + " &limit=100&apikey=e3499469c9a457a91a2c166db22ea059",})
+                        .then(function(response){ $scope.details = response.data; });
+                }
+
+//                $scope.update = function(movie){
+//                    $scope.search = movie.Title;
+//                };
+//
+//                $scope.select = function(){
+//                    this.setSelectionRange(0, this.value.length);
+//                }
+            }]);
+
+
+        </script>
+        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.12.0.min.js"><\/script>')</script>
+        <script src="js/plugins.js"></script>
+        <script src="js/main.js"></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+            function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+            e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+            e.src='https://www.google-analytics.com/analytics.js';
+            r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+            ga('create','UA-XXXXX-X','auto');ga('send','pageview');
+        </script>
+    </body>
+</html>
