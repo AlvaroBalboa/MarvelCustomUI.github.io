@@ -26,11 +26,11 @@
         <header>
             <nav>
                 <h1>The Marvel UI</h1>
-                <h2>the world of superman at your finger-tips</h2>
-                <h3>just enter a name in the search bar and see</h3>
-                <h4>from superman to Aqua-lad</h4>
-                <h5>lets see how small this really is</h5>
-                <h6>ok not as small as I thought</h6>
+                <!--<h2>the world of superman at your finger-tips</h2>-->
+                <!--<h3>just enter a name in the search bar and see</h3>-->
+                <!--<h4>from superman to Aqua-lad</h4>-->
+                <!--<h5>lets see how small this really is</h5>-->
+                <!--<h6>ok not as small as I thought</h6>-->
 
                 <a href="index.html">clear the page</a>
             </nav>
@@ -51,70 +51,42 @@
                     <div ng-if="!searchName">
                         <div ng-if="apiInfoAll">
                             <table>
-                                <tr>
-                                    <td>List of Marvel Characters</td>
-                                </tr>
-                                <tr ng-repeat="character in apiInfoAll.Response">
-                                    <td>{{character.name}}</td>
-                                </tr>
+                                    <thead>
+                                        <th>List of Marvel Characters</th>
+                                    </thead>
+                                    <tr ng-repeat="character in apiInfoAll">
+                                        <th>{{character.name}}</th>
+                                        <td><img ng-src="{{character.thumbnail.path}}.{{character.thumbnail.extension}}" width="250" height="250" ></td>
+                                    </tr>
                             </table>
                         </div>
                     </div>
 
                     <div ng-if="searchName">
                         <!--this will display for not being able to find the proper result-->
-                        <div ng-if="apiInfoSearch.Response==='False'">
-                            No results found.
-                        </div>
+                        <!--<div ng-if="apiInfoSearch.Response==='False'">-->
+                            <!--No results found.-->
+                        <!--</div>-->
 
                         <!--this is for more info after finding the correct hero/heroes-->
-                        <div ng-if="apiInfoSearch.Response==='True'">
+                        <div ng-if="apiInfoSearch">
                             <!--apiInfoSearch-->
-
-                            <img ng-src="{{details.Poster=='N/A' ? 'http://placehold.it/150x220&text=N/A' : details.Poster }}">
-
-                            <span class="span-outer">
-                                <a href="http://imdb.com/title/{{ details.imdbID }}" target="_blank">{{ details.Title }}</a>
-                            </span>, {{ details.Year }}
-
-                            <p>
-                                <strong>Released on:</strong>
-                                {{ details.Released }}
-                                ({{ details.Runtime }})
-                            </p>
-
-                            <p>{{ details.Plot }}</p>
-
-                            <p>
-                            </p>
+                            <table>
+                                <thead>
+                                    <th>List of Marvel Characters</th>
+                                </thead>
+                                <tr ng-repeat="character in apiInfoSearch">
+                                    <th>{{character.name}}</th>
+                                    <td><img ng-src="{{character.thumbnail.path}}.{{character.thumbnail.extension}}" width="250" height="250"></td>
+                                </tr>
+                                <tr ng-repeat="event in character.events.items">
+                                    <td>{{event.name}}</td>
+                                </tr>
+                            </table>
 
                         </div>
                     </div>
                 </div>
-
-
-
-
-                <!--<div ng-if="video == video.large">-->
-                    <!--<table>-->
-                        <!--<tr>-->
-                            <!--<td>characters</td>-->
-                        <!--</tr>-->
-                        <!--<tr ng-repeat="fullList in heroes">-->
-                            <!--<td>{{fullList}}</td>-->
-                        <!--</tr>-->
-                    <!--</table>-->
-                <!--</div>-->
-                <!--<div ng-if="video != video.large">-->
-                    <!--<table>-->
-                        <!--<tr>-->
-                            <!--<td>characters</td>-->
-                        <!--</tr>-->
-                        <!--<tr ng-repeat="fullList in heroes">-->
-                            <!--<td>{{fullList}}</td>-->
-                        <!--</tr>-->
-                    <!--</table>-->
-                <!--</div>-->
             </div>
         </div>
         <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
@@ -156,12 +128,12 @@
 
                 function getFromApi() {
 
-                    $http({method: "get", url:"https://gateway.marvel.com:443/v1/public/characters?limit=99&ts=30&apikey=e3499469c9a457a91a2c166db22ea059&hash=92459d67402e191a18f33fdadced23d3",})
+                    $http({method: "get", url:"https://gateway.marvel.com:443/v1/public/characters?limit=99&ts=30&apikey=e3499469c9a457a91a2c166db22ea059&hash=96538737fdab3fbf471d2294bbcd0f51",})
                         .then(function(response){
                             $scope.apiInfoAll = response.data.data.results;
                         });
 
-                    $http.get({ url:"https://gateway.marvel.com:443/v1/public/characters?nameStartsWith= "+ $scope.searchName + " &limit=100&ts=30&apikey=e3499469c9a457a91a2c166db22ea059&hash=92459d67402e191a18f33fdadced23d3",})
+                    $http({method: "get",  url:"https://gateway.marvel.com:443/v1/public/characters?nameStartsWith="+ $scope.searchName + "&limit=99&ts=30&apikey=e3499469c9a457a91a2c166db22ea059&hash=96538737fdab3fbf471d2294bbcd0f51",})
                         .then(function(response){
                             $scope.apiInfoSearch = response.data.data.results;
                         });
